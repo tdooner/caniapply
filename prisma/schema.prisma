@@ -1,0 +1,26 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model pings {
+  id          Int       @id @default(autoincrement())
+  system_id   Int?
+  latency     Decimal?
+  http_status Int?
+  body_length Int?
+  created_at  String
+}
+
+model systems {
+  id           Int     @id @default(autoincrement())
+  host         String  @unique(map: "idx_systems_host")
+  uri          String?
+  jurisdiction String?
+  programs     String?
+  name         String?
+}
