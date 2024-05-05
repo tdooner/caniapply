@@ -11,7 +11,7 @@ model pings {
   id          Int       @id @default(autoincrement())
   system_id   Int?
   latency     Decimal?
-  http_status Int?
+  http_status Int
   body_length Int?
   created_at  String
 }
