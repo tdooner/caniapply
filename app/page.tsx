@@ -95,7 +95,7 @@ export default async function Home() {
         const intervals = uptimeBySystem[system.id].intervals;
 
         return <div key={system.id}>
-          <div>{system.name}</div>
+          <div>{system.jurisdiction} {system.name}</div>
           <div>{renderIntervals(intervals)}</div>
         </div>
       })}
