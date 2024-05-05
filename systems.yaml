@@ -1,0 +1,439 @@
+---
+- name: ARIES
+  jurisdiction: Alaska
+  url: https://aries.alaska.gov/screener/
+  programs: m
+- name: Insure Alabama
+  jurisdiction: Alabama
+  url: https://insurealabama.adph.state.al.us/
+  programs: m
+- name: MyDHR
+  jurisdiction: Alabama
+  url: https://mydhr.alabama.gov/
+  programs: s
+- name: OneAlabama
+  jurisdiction: Alabama
+  url: https://one.alabama.gov/
+  programs: t
+- name: Access Arkansas
+  jurisdiction: Arkansas
+  url: https://access.arkansas.gov/Learn/Home?lang=en_US
+  programs: mst
+- name: Health-e-Arizona PLUS
+  jurisdiction: Arizona
+  url: https://www.healthearizonaplus.gov/Login/Default
+  programs: mst
+- name: WIC Arizona
+  jurisdiction: Arizona
+  url: https://www.myazwic.com/
+  programs: w
+- name: BenefitsCal
+  jurisdiction: California
+  url: https://benefitscal.com/
+  programs: mst
+- name: GetCalFresh
+  jurisdiction: California
+  url: https://www.getcalfresh.org/
+  programs:
+- name: MyBenefits CalWIN
+  jurisdiction: California
+  url: https://benefitscal.com/#/home
+  programs: mst
+- name: PHFE WIC
+  jurisdiction: California
+  url: https://www.phfewic.org/en/how-wic-works/apply-for-wic/
+  programs:
+- name: Colorado PEAK
+  jurisdiction: Colorado
+  url: https://peak.my.site.com/peak/s/peak-landing-page?language=en_US
+  programs: mstcw
+- name: Colorado WIC Families
+  jurisdiction: Colorado
+  url: https://www.healthinformatics.dphe.state.co.us/WICSignUp
+  programs: w
+- name: Access Health CT
+  jurisdiction: Connecticut
+  url: https://www.accesshealthct.com/
+  programs: m
+- name: Care 4 Kids
+  jurisdiction: Connecticut
+  url: https://portal.ct.gov/oec/care4kids?language=en_US
+  programs: c
+- name: ConneCT
+  jurisdiction: Connecticut
+  url: https://www.connect.ct.gov/access/jsp/access/Home.jsp
+  programs: st
+- name: WIC
+  jurisdiction: Connecticut
+  url: https://dphsubmissions.ct.gov/CTWIC_Interest_Form
+  programs: w
+- name: District Direct
+  jurisdiction: District of Columbia
+  url: https://districtdirect.dc.gov/ua/
+  programs: mst
+- name: Delaware Assist
+  jurisdiction: Delaware
+  url: https://assist.dhss.delaware.gov/
+  programs: mstc
+- name: Access Florida
+  jurisdiction: Florida
+  url: https://www.myflorida.com/accessflorida/
+  programs: mst
+- name: Georgia Gateway
+  jurisdiction: Georgia
+  url: https://gateway.ga.gov/access/
+  programs: mstcw
+- name: WIC
+  jurisdiction: Hawaii
+  url: https://www.hiwic.org/apply
+  programs:
+- name: Med-QUEST
+  jurisdiction: Hawaii
+  url: https://medical.mybenefits.hawaii.gov/
+  programs: m
+- name: PAIS Benefits
+  jurisdiction: Hawaii
+  url: https://pais-benefits.dhs.hawaii.gov/
+  programs: st
+- name: DHS CCMIS Client Portal
+  jurisdiction: Iowa
+  url: https://ccmis.dhs.state.ia.us/clientportal/ChildcareEligibilityInfo.aspx
+  programs: c
+- name: DHS Services Portal
+  jurisdiction: Iowa
+  url: https://hhsservices.iowa.gov/apspssp/ssp.portal
+  programs: mst
+- name: idalink
+  jurisdiction: Idaho
+  url: https://idalink.idaho.gov/
+  programs: m
+- name: ABE
+  jurisdiction: Illinois
+  url: https://abe.illinois.gov/abe/access/accessController?id=0.642487260961808
+  programs: mst
+- name: Early Ed Connect
+  jurisdiction: Indiana
+  url: https://earlyedconnect.fssa.in.gov/onlineApp/home
+  programs: c
+- name: FSSA Benefits Medicaid
+  jurisdiction: Indiana
+  url: https://fssabenefits.in.gov/bp/#/
+  programs: m
+- name: FSSA Benefits SNAP/TANF
+  jurisdiction: Indiana
+  url: https://fssabenefits.in.gov/bp/#/
+  programs: st
+- name: KanCare
+  jurisdiction: Kansas
+  url: https://cssp.kees.ks.gov/apspssp/
+  programs: m
+- name: DCF Self-Service Portal
+  jurisdiction: Kansas
+  url: https://cssp.kees.ks.gov/apspssp/sspNonMed.portal
+  programs: stc
+- name: kynect
+  jurisdiction: Kentucky
+  url: https://kynect.ky.gov/benefits/s/?language=en_US
+  programs: mstc
+- name: Short SNAP Application
+  jurisdiction: Kentucky
+  url: https://kynect.ky.gov/benefits/s/getstartedsnap?language=en_US
+  programs: s
+- name: CCAP Customer Portal
+  jurisdiction: Louisiana
+  url: https://cafe-cp.doe.louisiana.gov/edselfservice/
+  programs: c
+- name: Healthy Louisiana
+  jurisdiction: Louisiana
+  url: https://sspweb.lameds.ldh.la.gov/selfservice/
+  programs: m
+- name: LA CAFÉ
+  jurisdiction: Louisiana
+  url: https://sspweb.ie.dcfs.la.gov/selfservice/selfserviceJSPController?id=0.010342825140183809&tab=1
+  programs: st
+- name: Louisiana WIC
+  jurisdiction: Louisiana
+  url: https://louisianawic.org/about/apply-online/
+  programs: w
+- name: WIC
+  jurisdiction: Massachusetts
+  url: https://www.mass.gov/forms/apply-for-wic-online
+  programs:
+- name: MassHealth
+  jurisdiction: Massachusetts
+  url: https://www.mahix.org/individual/
+  programs: m
+- name: DTA Connect SNAP
+  jurisdiction: Massachusetts
+  url: https://dtaconnect.eohhs.mass.gov/
+  programs: s
+- name: DTA Connect TANF
+  jurisdiction: Massachusetts
+  url: https://dtaconnect.eohhs.mass.gov/applyTafdc
+  programs: t
+- name: Maryland Health Connection
+  jurisdiction: Maryland
+  url: https://marylandhealthconnection.gov
+  programs: m
+- name: myMDTHINK
+  jurisdiction: Maryland
+  url: https://mymdthink.maryland.gov/home/
+  programs: st
+- name: My Maine Connection
+  jurisdiction: Maine
+  url: https://www.mymaineconnection.gov/benefits/s/?language=en_US
+  programs: mst
+- name: MI Bridges
+  jurisdiction: Michigan
+  url: https://newmibridges.michigan.gov/s/isd-landing-page?language=en_US
+  programs: mstcw
+- name: MNbenefits
+  jurisdiction: Minnesota
+  url: https://mnbenefits.mn.gov/
+  programs: stc
+- name: MNsure
+  jurisdiction: Minnesota
+  url: https://www.mnsure.org/
+  programs: m
+- name: Minnesota WIC
+  jurisdiction: Minnesota
+  url: https://redcap.health.state.mn.us/redcap/surveys/?s=4WCPLJL77MLKRPJ3
+  programs: w
+- name: DSS Child Care Subsidy
+  jurisdiction: Missouri
+  url: https://formsportal.dss.mo.gov/content/forms/af/moa/my-dss/family-support-division/im-cc-child-care-subsidy/im-1cc.html
+  programs: c
+- name: MO HealthNet
+  jurisdiction: Missouri
+  url: https://mydss.mo.gov/healthcare
+  programs: m
+- name: DSS SNAP
+  jurisdiction: Missouri
+  url: https://mydss.mo.gov/food-assistance/apply-for-snap
+  programs: s
+- name: DSS Temporary Assistance
+  jurisdiction: Missouri
+  url: https://formsportal.dss.mo.gov/content/forms/af/moa/my-dss/family-support-division/im-1talf/im-1talf.html
+  programs: t
+- name: Missouri WIC
+  jurisdiction: Missouri
+  url: https://orange-dune-081249210.1.azurestaticapps.net/
+  programs:
+- name: ACCESS MS
+  jurisdiction: Mississippi
+  url: https://www.access.ms.gov/
+  programs: mst
+- name: Child Care Payment System
+  jurisdiction: Mississippi
+  url: https://www.apps.mdhs.ms.gov/ccis/NewApplication/AppStartPage.aspx
+  programs: c
+- name: myMDHS
+  jurisdiction: Mississippi
+  url: https://my.mdhs.ms.gov/#/activate/register
+  programs: st
+- name: Best Beginnings
+  jurisdiction: Montana
+  url: https://app.mt.gov/ccubs/
+  programs: c
+- name: Montana DPHHS
+  jurisdiction: Montana
+  url: https://apply.mt.gov/
+  programs: mst
+- name: ePASS
+  jurisdiction: North Carolina
+  url: https://epass.nc.gov/
+  programs: mst
+- name: ePASS SNAP only
+  jurisdiction: North Carolina
+  url: https://epass.nc.gov/nf-apply-for-assistance-anonymous/nfAccountOptions
+  programs: s
+- name: Economic Assistance Self-Service Portal
+  jurisdiction: North Dakota
+  # Not ideal since it's not the actual application, but the actual application
+  # seems to be login-gated
+  url: https://dhsbenefits.dhs.nd.gov/SSPPortal/public/am-i-eligible/start
+  programs: mstc
+- name: iServe Nebraska
+  jurisdiction: Nebraska
+  url: https://iserve.nebraska.gov/
+  programs: stc
+- name: iServe Nebraska Medicaid
+  jurisdiction: Nebraska
+  url: https://iserve.nebraska.gov/
+  programs: m
+- name: NH EASY
+  jurisdiction: New Hampshire
+  url: https://nheasy.nh.gov/#/
+  programs: mstc
+- name: MyNJHelps
+  jurisdiction: New Jersey
+  url: https://www.mynjhelps.gov/home
+  programs: st
+- name: NJ FamilyCare
+  jurisdiction: New Jersey
+  url: https://njfamilycare.dhs.state.nj.us/
+  programs: m
+- name: New Jersey WIC
+  jurisdiction: New Jersey
+  url: https://wic.nj.gov/participantportal/en/
+  programs: w
+- name: Family Services of NM
+  jurisdiction: New Mexico
+  url: https://eligibility.ececd.nm.gov/eligibility/public/application/applicationInfo.page?dswid=5998
+  programs: c
+- name: YesNM
+  jurisdiction: New Mexico
+  url: https://www.yes.state.nm.us/yesnm/home/index
+  programs: mst
+- name: Access Nevada
+  jurisdiction: Nevada
+  url: https://accessnevada.dwss.nv.gov/public/landing-page
+  programs: mstcw
+- name: myBenefits
+  jurisdiction: New York
+  url: https://mybenefits.ny.gov/mybenefits/begin
+  programs: mstc
+- name: NY State of Health
+  jurisdiction: New York
+  url: https://nystateofhealth.ny.gov/
+  programs: m
+- name: Ohio Benefits
+  jurisdiction: Ohio
+  url: https://benefits.ohio.gov/index.html?lang=
+  programs: mstc
+- name: OKDHSLive!
+  jurisdiction: Oklahoma
+  url: https://okdhslive.org/
+  programs: stc
+- name: My SoonerCare
+  jurisdiction: Oklahoma
+  url: https://oklahoma.gov/ohca/individuals/mysoonercare.html
+  programs: m
+- name: Oklahoma WIC
+  jurisdiction: Oklahoma
+  url: https://osdhcfhs.az1.qualtrics.com/jfe/form/SV_b8vNxstcQGy9YzA?Source=Website
+  programs: w
+- name: WIC - (7 counties have longer preapps)
+  jurisdiction: Oregon
+  url: https://www.oregon.gov/oha/PH/HEALTHYPEOPLEFAMILIES/WIC/Pages/interest-form.aspx
+  programs:
+- name: ONE Oregon
+  jurisdiction: Oregon
+  url: https://one.oregon.gov/
+  programs: mstc
+- name: COMPASS
+  jurisdiction: Pennsylvania
+  url: https://www.compass.state.pa.us/compass.web/Public/CMPHome
+  programs: mstc
+- name: Pennslyvania WIC
+  jurisdiction: Pennsylvania
+  url: https://www.pawic.com/OnlineApplication.aspx
+  programs: w
+- name: Programa Child Care
+  jurisdiction: Puerto Rico
+  url: https://childcare.familia.pr.gov/requisitos-del-programa/
+  programs: c
+- name: ADSEF Digital
+  jurisdiction: Puerto Rico
+  url: https://serviciosenlinea.adsef.pr.gov/adsefdigital/Security/Login.aspx
+  programs: st
+- name: PSPMPR
+  jurisdiction: Puerto Rico
+  url: https://prod-ua.preeservices.com/
+  programs: m
+- name: HealthSource RI
+  jurisdiction: Rhode Island
+  url: https://healthyrhode.ri.gov/HIXWebI3/DisplayHomePage
+  programs: mstc
+- name: Child Care Scholarships
+  jurisdiction: South Carolina
+  url: https://benefitsportal.dss.sc.gov/#/login
+  programs: c
+- name: Healthy Connections
+  jurisdiction: South Carolina
+  url: https://apply.scdhhs.gov/CitizenPortal/application.do
+  programs: m
+- name: South Carolina Client Eligibility System
+  jurisdiction: South Carolina
+  url: https://benefitsportal.dss.sc.gov/
+  programs: st
+- name: Child Care Assistance Application
+  jurisdiction: South Dakota
+  url: https://www.sd.gov/cs?id=sc_cat_item&sys_id=bd3c763bdb933010b2fb93d4f39619ef
+  programs: c
+- name: DSS South Dakota
+  jurisdiction: South Dakota
+  url: https://eaportal.sd.gov/
+  programs: ms
+- name: South Dakota WIC
+  jurisdiction: South Dakota
+  url: https://sdwic.org/start-application/
+  programs: w
+- name: ONE DHS Childcare Assistance
+  jurisdiction: Tennessee
+  url: https://onedhs.tn.gov/csp
+  programs: c
+- name: ONE DHS
+  jurisdiction: Tennessee
+  url: https://onedhs.tn.gov/csp
+  programs: st
+- name: TennCare Connect
+  jurisdiction: Tennessee
+  url: https://tenncareconnect.tn.gov/index.html
+  programs: m
+- name: Texas WIC
+  jurisdiction: Texas
+  url: https://texaswic.org/apply
+  programs: w
+- name: Your Texas Benefits
+  jurisdiction: Texas
+  url: https://www.yourtexasbenefits.com/Learn/Home
+  programs: mst
+- name: myCase
+  jurisdiction: Utah
+  url: https://jobs.utah.gov/mycase-app/ui/
+  programs: mstc
+- name: CommonHelp
+  jurisdiction: Virginia
+  url: https://commonhelp.virginia.gov/
+  programs: mstc
+- name: WIC
+  jurisdiction: Virginia
+  url: https://www.vdh.virginia.gov/wic/
+  programs: w
+- name: ESD MyBenefits
+  jurisdiction: Vermont
+  url: https://mybenefits.ahs.state.vt.us/Login.aspx?ReturnUrl=/selfservice/Default.aspx
+  programs: st
+- name: Vermont Health Connect
+  jurisdiction: Vermont
+  url: https://portal.healthconnect.vermont.gov/VTHBELand/welcome.action
+  programs: m
+- name: Vermont WIC Online
+  jurisdiction: Vermont
+  url: https://www.surveygizmo.com/s3/5469549/Vermont-WIC-Online-Applicaton
+  programs: w
+- name: Washington Healthplanfinder
+  jurisdiction: Washington
+  url: https://www.wahealthplanfinder.org/
+  programs: m
+- name: Washington Connection
+  jurisdiction: Washington
+  url: https://www.washingtonconnection.org/home/
+  programs: stc
+- name: ACCESS
+  jurisdiction: Wisconsin
+  url: https://access.wisconsin.gov/access/
+  programs: mstc
+- name: PATH
+  jurisdiction: West Virginia
+  url: https://www.wvpath.wv.gov/
+  programs: mstc
+- name: WIC
+  jurisdiction: West Virginia
+  url: https://wvwichousehold.wvdhhr.org/
+  programs: w
+- name: WY Medicaid/CHIP Web Portal
+  jurisdiction: Wyoming
+  url: https://health.wyo.gov/healthcarefin/apply/
+  programs: m
