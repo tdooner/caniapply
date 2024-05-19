@@ -52,6 +52,12 @@ const getLastDayUptimeByHour = async function(systemIds: number[]) : Promise<Las
       }
     })
 
+    // Assume that the system system is still in the status from after the last ping
+    // TODO: Test this.
+    if (intervals.length > 0) {
+      intervals[intervals.length - 1].endTime = format(DATABASE_DATE_FORMAT, new Date())
+    }
+
     uptimeBySystem[systemId] = {
       intervals,
     };
@@ -61,8 +67,11 @@ const getLastDayUptimeByHour = async function(systemIds: number[]) : Promise<Las
 }
 
 const renderIntervals = function(intervals : UptimeInterval[]) : ReactNode {
-  const totalDuration = format.parse(DATABASE_DATE_FORMAT, intervals[intervals.length - 1].endTime) -
-    format.parse(DATABASE_DATE_FORMAT, intervals[0].beginTime);
+  if (intervals.length === 0) {
+    return <div>No data</div>
+  }
+
+  const totalDuration = format.parse(DATABASE_DATE_FORMAT, intervals[intervals.length - 1].endTime) - format.parse(DATABASE_DATE_FORMAT, intervals[0].beginTime);
 
   return (
     <div>
@@ -77,7 +86,7 @@ const renderIntervals = function(intervals : UptimeInterval[]) : ReactNode {
         }
 
         return (
-          <div key={interval.beginTime} style={style} title={interval.http_status}></div>
+          <div key={interval.beginTime} style={style} title={interval.http_status.toString()}></div>
         )
       })}
     </div>
