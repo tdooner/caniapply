@@ -18,6 +18,7 @@ model pings {
 
 model systems {
   id           Int     @id @default(autoincrement())
+  slug         String  @unique(map: "idx_systems_slug")
   host         String  @unique(map: "idx_systems_host")
   uri          String?
   jurisdiction String?

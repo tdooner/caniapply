@@ -1,6 +1,7 @@
 import path from "path";
 import YAML from "yaml";
 import fs from 'fs';
+import { PrismaClient } from "@prisma/client";
 
 const SYSTEMS_YAML_PATH = path.resolve(__filename, '../../systems.yaml');
 
@@ -18,15 +19,32 @@ const toSlug = function(item : YamlItem) : string {
 
 export const importSystemsYaml = async function() : Promise<void> {
   console.log("Parsing ", SYSTEMS_YAML_PATH)
+  const prisma = new PrismaClient()
   const parsed = YAML.parse(fs.readFileSync(SYSTEMS_YAML_PATH).toString()) as YamlItem[]
-  parsed.forEach(item => {
+  parsed.forEach(async item => {
+    const slug = toSlug(item)
     console.log(item, toSlug(item))
-    /* TODO: Draw the rest of the owl.
-     *
-     * Add "slug" as a database field
-     * Find or create these systems by slug in the database
-     * Think about a workflow to rename these by supporting "previous_slugs" in the YAML as well
-     */
+    const system = await prisma.systems.upsert({
+      create: {
+        slug,
+        host: item.url,
+        uri: item.url,
+        jurisdiction: item.jurisdiction,
+        programs: item.programs,
+        name: item.name,
+      },
+      update: {
+        host: item.url,
+        uri: item.url,
+        jurisdiction: item.jurisdiction,
+        programs: item.programs,
+        name: item.name,
+      },
+      where: {
+        slug: slug,
+      }
+    })
+    console.log(system)
   })
 }
 

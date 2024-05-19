@@ -115,14 +115,10 @@
   jurisdiction: Indiana
   url: https://earlyedconnect.fssa.in.gov/onlineApp/home
   programs: c
-- name: FSSA Benefits Medicaid
+- name: FSSA Benefits SNAP/TANF/Medicaid
   jurisdiction: Indiana
   url: https://fssabenefits.in.gov/bp/#/
-  programs: m
-- name: FSSA Benefits SNAP/TANF
-  jurisdiction: Indiana
-  url: https://fssabenefits.in.gov/bp/#/
-  programs: st
+  programs: stm
 - name: KanCare
   jurisdiction: Kansas
   url: https://cssp.kees.ks.gov/apspssp/
@@ -256,11 +252,7 @@
 - name: iServe Nebraska
   jurisdiction: Nebraska
   url: https://iserve.nebraska.gov/
-  programs: stc
-- name: iServe Nebraska Medicaid
-  jurisdiction: Nebraska
-  url: https://iserve.nebraska.gov/
-  programs: m
+  programs: stcm
 - name: NH EASY
   jurisdiction: New Hampshire
   url: https://nheasy.nh.gov/#/
@@ -369,14 +361,10 @@
   jurisdiction: South Dakota
   url: https://sdwic.org/start-application/
   programs: w
-- name: ONE DHS Childcare Assistance
-  jurisdiction: Tennessee
-  url: https://onedhs.tn.gov/csp
-  programs: c
 - name: ONE DHS
   jurisdiction: Tennessee
   url: https://onedhs.tn.gov/csp
-  programs: st
+  programs: stc
 - name: TennCare Connect
   jurisdiction: Tennessee
   url: https://tenncareconnect.tn.gov/index.html
