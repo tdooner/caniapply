@@ -1,10 +1,15 @@
+import os from 'os'
 import { PrismaClient } from '@prisma/client'
-import PQueue from 'p-queue'
-import format from 'date-format';
+import format from 'date-format'
+import genericPool from 'generic-pool'
 import { Builder, Browser, WebDriver } from 'selenium-webdriver'
 import * as firefox from 'selenium-webdriver/firefox'
 
 const DATABASE_DATE_FORMAT = "yyyy-MM-dd hh:mm:ss.SSS";
+const ONE_MEGABYTE = 1024 * 1024
+const BROWSER_MEM_USAGE_BYTES = 512 * ONE_MEGABYTE
+const FREE_MEMORY_BYTES = os.freemem()
+const NUM_BROWSERS = Math.min(8, Math.ceil(FREE_MEMORY_BYTES / BROWSER_MEM_USAGE_BYTES))
 
 const initializeBrowser = async function(): Promise<WebDriver> {
   console.log("Starting browser...")
@@ -32,12 +37,17 @@ export const scrape = async function(driver: WebDriver, url: string | null) {
 export const scrapeAll = async function() {
   const prisma = new PrismaClient()
   const systems = await prisma.systems.findMany()
-  const queue = new PQueue({ concurrency: 1 })
-  const driver = await initializeBrowser()
+  console.log("Starting up to ", NUM_BROWSERS, " browsers (", Math.round(FREE_MEMORY_BYTES / ONE_MEGABYTE), "MB free)")
+  const pool = genericPool.createPool({
+    create: initializeBrowser,
+    destroy: browser => browser.close()
+  }, { max: NUM_BROWSERS, min: 1 })
 
-  systems.forEach(async system => {
+  await Promise.all(systems.map(async system => {
+    const driver = await pool.acquire()
+
     try {
-      const response = await queue.add(() => scrape(driver, system.uri))
+      const response = await scrape(driver, system.uri)
       if (response) {
         console.error("Response Length: ", response.length)
         await prisma.pings.create({
@@ -52,8 +62,19 @@ export const scrapeAll = async function() {
       }
     } catch (ex) {
       console.error("Got exception: ", ex)
+      await prisma.pings.create({
+        data: {
+          system_id: system.id,
+          latency: 0, // TODO: Get this back again
+          http_status: 500, // TODO: Get this back again
+          body_length: 0,
+          created_at: format(DATABASE_DATE_FORMAT, new Date())
+        }
+      })
     }
-  })
+
+    pool.release(driver)
+  }))
 }
 
 scrapeAll()
