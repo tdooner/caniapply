@@ -31,6 +31,6 @@ export const importSystemsYaml = async function() : Promise<void> {
 }
 
 
-// TODO: Is there a better way to run this than:
-//   npx ts-node -O '{"module":"commonjs"}' scraper/import.ts
+// run via:
+// npx tsx scraper/import.ts
 importSystemsYaml()

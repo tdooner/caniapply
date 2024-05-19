@@ -7,12 +7,6 @@ First, run the development server:
 ```bash
 nodenv install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
@@ -39,3 +33,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 ## Headless browser setup
 1. Install firefox (on WSL, use [this](https://ubuntuhandbook.org/index.php/2022/04/install-firefox-deb-ubuntu-22-04/))
 2. sudo apt install firefox-geckodriver
+
+## TODO list
+* Switch database to postgresql
+* Set it up on render or a PaaS
