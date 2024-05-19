@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "migrate": "prisma migrate deploy && tsx scraper/import.ts"
+    "migrate": "prisma migrate deploy && prisma generate && tsx scraper/import.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.13.0",
