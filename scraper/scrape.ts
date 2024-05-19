@@ -9,7 +9,9 @@ const DATABASE_DATE_FORMAT = "yyyy-MM-dd hh:mm:ss.SSS";
 const ONE_MEGABYTE = 1024 * 1024
 const BROWSER_MEM_USAGE_BYTES = 512 * ONE_MEGABYTE
 const FREE_MEMORY_BYTES = os.freemem()
-const NUM_BROWSERS = Math.min(8, Math.ceil(FREE_MEMORY_BYTES / BROWSER_MEM_USAGE_BYTES))
+const NUM_BROWSERS = process.env.NUM_BROWSERS ?
+  Number.parseInt(process.env.NUM_BROWSERS) :
+  Math.min(8, Math.ceil(FREE_MEMORY_BYTES / BROWSER_MEM_USAGE_BYTES))
 
 const initializeBrowser = async function(): Promise<WebDriver> {
   console.log("Starting browser...")
@@ -37,7 +39,7 @@ export const scrape = async function(driver: WebDriver, url: string | null) {
 export const scrapeAll = async function() {
   const prisma = new PrismaClient()
   const systems = await prisma.systems.findMany()
-  console.log("Starting up to ", NUM_BROWSERS, " browsers (", Math.round(FREE_MEMORY_BYTES / ONE_MEGABYTE), "MB free)")
+  console.log("Starting up to ", NUM_BROWSERS, " browsers (NUM_BROWSERS=", process.env.NUM_BROWSERS, ", ", Math.round(FREE_MEMORY_BYTES / ONE_MEGABYTE), "MB free)")
   const pool = genericPool.createPool({
     create: initializeBrowser,
     destroy: browser => browser.close()
