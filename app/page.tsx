@@ -19,8 +19,7 @@ type LastDayUptime = {
 }
 const getLastDayUptimeByHour = async function(systemIds: number[]) : Promise<LastDayUptime> {
   const uptimeBySystem : LastDayUptime = {};
-  // const twentyFourHoursAgo = format(DATABASE_DATE_FORMAT, new Date(new Date().getTime() - TWENTY_FOUR_HOURS_IN_MS));
-  const twentyFourHoursAgo = "2024-05-03 00:00:00.000"
+  const twentyFourHoursAgo = format(DATABASE_DATE_FORMAT, new Date(new Date().getTime() - TWENTY_FOUR_HOURS_IN_MS));
   const pings = await prisma.pings.findMany({
     where: {
       system_id: {
@@ -78,7 +77,7 @@ const renderIntervals = function(intervals : UptimeInterval[]) : ReactNode {
         }
 
         return (
-          <div key={interval.beginTime} style={style}></div>
+          <div key={interval.beginTime} style={style} title={interval.http_status}></div>
         )
       })}
     </div>

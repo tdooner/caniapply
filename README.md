@@ -35,3 +35,7 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+## Headless browser setup
+1. Install firefox (on WSL, use [this](https://ubuntuhandbook.org/index.php/2022/04/install-firefox-deb-ubuntu-22-04/))
+2. sudo apt install firefox-geckodriver
