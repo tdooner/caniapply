@@ -7,6 +7,12 @@ First, run the development server:
 ```bash
 nodenv install
 npm run dev
+
+brew tap render-oss/render
+brew install render
+
+# Ubuntu:
+f=~/bin/render; wget -O $f https://github.com/render-oss/render-cli/releases/download/v0.1.11/render-linux-x86_64 ; chmod +x $f
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
@@ -24,16 +30,12 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-
 ## Headless browser setup
 1. Install firefox (on WSL, use [this](https://ubuntuhandbook.org/index.php/2022/04/install-firefox-deb-ubuntu-22-04/))
 2. sudo apt install firefox-geckodriver
 
 ## TODO list
-* Switch database to postgresql
-* Set it up on render or a PaaS
+* Add testing
+* Set up cron job to ping all systems periodically
+
+* Fix dev env so fonts work for the nvim tree plugin
