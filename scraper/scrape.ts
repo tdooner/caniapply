@@ -44,6 +44,7 @@ export const scrapeAll = async function() {
     create: initializeBrowser,
     destroy: browser => browser.close()
   }, { max: NUM_BROWSERS, min: 1 })
+  pool.on("factoryCreateError", (ex) => console.error("Error starting browser:", ex))
 
   await Promise.all(systems.map(async system => {
     const driver = await pool.acquire()
