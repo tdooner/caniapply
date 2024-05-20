@@ -2,8 +2,8 @@ import os from 'os'
 import { PrismaClient } from '@prisma/client'
 import format from 'date-format'
 import genericPool from 'generic-pool'
-import { Builder, Browser, WebDriver } from 'selenium-webdriver'
-import * as firefox from 'selenium-webdriver/firefox'
+import { Builder, Browser, WebDriver, logging } from 'selenium-webdriver'
+import * as chrome from 'selenium-webdriver/chrome'
 
 const DATABASE_DATE_FORMAT = "yyyy-MM-dd hh:mm:ss.SSS";
 const ONE_MEGABYTE = 1024 * 1024
@@ -15,12 +15,14 @@ const NUM_BROWSERS = process.env.NUM_BROWSERS ?
 
 const initializeBrowser = async function(): Promise<WebDriver> {
   console.log("Starting browser...")
-  const driverOptions = new firefox.Options()
+  const driverOptions = new chrome.Options()
   driverOptions.addArguments("--headless")
+  driverOptions.addArguments("--no-sandbox")
+  driverOptions.addArguments("--disable-gpu")
 
   const driver = await new Builder()
-    .forBrowser(Browser.FIREFOX)
-    .setFirefoxOptions(driverOptions)
+    .forBrowser(Browser.CHROME)
+    .setChromeOptions(driverOptions)
     .build()
 
   return driver
