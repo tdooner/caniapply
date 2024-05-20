@@ -1,3 +1,4 @@
 FROM timbru31/node-alpine-firefox
 ADD . /app
-RUN cd /app && npm install
+WORKDIR /app
+RUN npm install
