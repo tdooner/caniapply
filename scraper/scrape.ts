@@ -2,7 +2,7 @@ import os from 'os'
 import { PrismaClient } from '@prisma/client'
 import format from 'date-format'
 import genericPool from 'generic-pool'
-import { Builder, Browser, WebDriver, logging } from 'selenium-webdriver'
+import { Builder, Browser, WebDriver } from 'selenium-webdriver'
 import * as chrome from 'selenium-webdriver/chrome'
 
 const DATABASE_DATE_FORMAT = "yyyy-MM-dd hh:mm:ss.SSS";
@@ -44,7 +44,7 @@ export const scrapeAll = async function() {
   console.log("Starting up to ", NUM_BROWSERS, " browsers (NUM_BROWSERS=", process.env.NUM_BROWSERS, ", ", Math.round(FREE_MEMORY_BYTES / ONE_MEGABYTE), "MB free)")
   const pool = genericPool.createPool({
     create: initializeBrowser,
-    destroy: browser => browser.close()
+    destroy: browser => browser.close(),
   }, { max: NUM_BROWSERS, min: 1 })
   pool.on("factoryCreateError", (ex) => console.error("Error starting browser:", ex))
 
@@ -65,8 +65,10 @@ export const scrapeAll = async function() {
           }
         })
       }
+      pool.release(driver)
     } catch (ex) {
       console.error("Got exception: ", ex)
+      pool.destroy(driver)
       await prisma.pings.create({
         data: {
           system_id: system.id,
@@ -77,8 +79,6 @@ export const scrapeAll = async function() {
         }
       })
     }
-
-    pool.release(driver)
   }))
 }
 
