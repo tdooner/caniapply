@@ -2,7 +2,7 @@ import os from 'os'
 import { PrismaClient } from '@prisma/client'
 import format from 'date-format'
 import genericPool from 'generic-pool'
-import { Builder, Browser, WebDriver } from 'selenium-webdriver'
+import { Builder, Browser, WebDriver, logging } from 'selenium-webdriver'
 import * as chrome from 'selenium-webdriver/chrome'
 
 const DATABASE_DATE_FORMAT = "yyyy-MM-dd hh:mm:ss.SSS";
@@ -20,12 +20,48 @@ const initializeBrowser = async function(): Promise<WebDriver> {
   driverOptions.addArguments("--no-sandbox")
   driverOptions.addArguments("--disable-gpu")
 
+  const logPrefs = new logging.Preferences()
+  logPrefs.setLevel(logging.Type.PERFORMANCE, logging.Level.ALL)
+  driverOptions.setLoggingPrefs(logPrefs)
+
   const driver = await new Builder()
     .forBrowser(Browser.CHROME)
     .setChromeOptions(driverOptions)
     .build()
 
+  // Some sites are located behind WAF's that block traffic from Headless Chrome - how rude :(.
+  // So, we need to spoof the user agent. This option seems to work better than passing
+  // --user-agent on the command-line, as it will clear out the client hints headers.
+  await (driver as any).sendDevToolsCommand("Emulation.setUserAgentOverride", {
+    userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+  })
+
   return driver
+}
+
+type PageLoadResult = {
+  loadTimeSeconds: number | undefined,
+  httpStatus: number | undefined
+}
+const extractLoadResult = function(entries : logging.Entry[]) : PageLoadResult {
+  let loadTimeSeconds, httpStatus
+  const parsedEntries = entries.map(entry => JSON.parse(entry.message))
+  const startedLoadingEvent = parsedEntries.find(entry => entry["message"]["method"] === "Network.requestWillBeSent")
+  const finishedLoadingEvent = parsedEntries.find(entry => entry["message"]["method"] === "Page.loadEventFired")
+  const responseEvent = parsedEntries.filter(entry => entry["message"]["params"]["requestId"] === startedLoadingEvent["message"]["params"]["requestId"] &&
+                                               entry["message"]["method"] === "Network.responseReceived")
+  
+  if (responseEvent.length > 1) {
+    console.warn("More than one responseEvent!", responseEvent)
+  } else {
+    httpStatus = responseEvent[0]["message"]["params"]["response"]["status"]
+  }
+
+  if (startedLoadingEvent && finishedLoadingEvent) {
+     loadTimeSeconds = finishedLoadingEvent["message"]["params"]["timestamp"] - startedLoadingEvent["message"]["params"]["timestamp"]
+  }
+
+  return { httpStatus, loadTimeSeconds }
 }
 
 export const scrape = async function(driver: WebDriver, url: string | null) {
@@ -54,12 +90,16 @@ export const scrapeAll = async function() {
     try {
       const response = await scrape(driver, system.uri)
       if (response) {
-        console.error("Response Length: ", response.length)
+        const performanceLogs = await driver.manage().logs().get(logging.Type.PERFORMANCE)
+        const loadResult = extractLoadResult(performanceLogs)
+
+        console.error("Response Length: ", response.length, "Load result: ", loadResult)
+
         await prisma.pings.create({
           data: {
             system_id: system.id,
-            latency: 0, // TODO: Get this back again
-            http_status: 0, // TODO: Get this back again
+            latency: loadResult.loadTimeSeconds,
+            http_status: loadResult.httpStatus || 0,
             body_length: response.length,
             created_at: format(DATABASE_DATE_FORMAT, new Date())
           }
@@ -72,8 +112,8 @@ export const scrapeAll = async function() {
       await prisma.pings.create({
         data: {
           system_id: system.id,
-          latency: 0, // TODO: Get this back again
-          http_status: 500, // TODO: Get this back again
+          latency: 0,
+          http_status: 999,
           body_length: 0,
           created_at: format(DATABASE_DATE_FORMAT, new Date())
         }

@@ -169,7 +169,7 @@
   programs: t
 - name: Maryland Health Connection
   jurisdiction: Maryland
-  url: https://marylandhealthconnection.gov
+  url: https://www.marylandhealthconnection.gov
   programs: m
 - name: myMDTHINK
   jurisdiction: Maryland
