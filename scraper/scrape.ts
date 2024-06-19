@@ -19,6 +19,7 @@ const initializeBrowser = async function(): Promise<WebDriver> {
   driverOptions.addArguments("--headless")
   driverOptions.addArguments("--no-sandbox")
   driverOptions.addArguments("--disable-gpu")
+  driverOptions.addArguments("--disable-dev-shm-usage")
 
   const logPrefs = new logging.Preferences()
   logPrefs.setLevel(logging.Type.PERFORMANCE, logging.Level.ALL)
