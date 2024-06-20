@@ -1,4 +1,13 @@
 ---
+# This file contains the knowledge of all benefit application systems.
+#
+# When possible, include the URLs that meet these criteria:
+# 1. They are the official URLs a person would use to begin a benefit application
+# 2. No redirects should be expected. If a site is redirecting, replace its URL with
+#    the destination of the redirect.
+#
+# Changing a system's `name` or `jurisdiction` will result in the system losing all
+# its data.
 - name: ARIES
   jurisdiction: Alaska
   url: https://aries.alaska.gov/screener/
@@ -35,10 +44,6 @@
   jurisdiction: California
   url: https://www.getcalfresh.org/
   programs:
-- name: MyBenefits CalWIN
-  jurisdiction: California
-  url: https://benefitscal.com/#/home
-  programs: mst
 - name: PHFE WIC
   jurisdiction: California
   url: https://www.phfewic.org/en/how-wic-works/apply-for-wic/
@@ -75,9 +80,9 @@
   jurisdiction: Delaware
   url: https://assist.dhss.delaware.gov/
   programs: mstc
-- name: Access Florida
+- name: MyACCESS
   jurisdiction: Florida
-  url: https://www.myflorida.com/accessflorida/
+  url: https://myaccess.myflfamilies.com/
   programs: mst
 - name: Georgia Gateway
   jurisdiction: Georgia
@@ -299,7 +304,7 @@
   programs: stc
 - name: My SoonerCare
   jurisdiction: Oklahoma
-  url: https://oklahoma.gov/ohca/individuals/mysoonercare.html
+  url: https://www.apply.okhca.org/Site/UserAccountLogin.aspx
   programs: m
 - name: Oklahoma WIC
   jurisdiction: Oklahoma
