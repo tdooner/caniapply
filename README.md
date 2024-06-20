@@ -1,4 +1,7 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Can I Apply?
+Every American should be able to apply for government benefits at any time of day. Government website "business hours" and "planned maintenance" outages should never prevent someone from applying for help that they need.
+
+This application tests [all known government benefit applications][1] every 15 minutes to see if they are currently operational.
 
 ## Getting Started
 
@@ -27,6 +30,8 @@ sudo mv chromedriver-linux64/chromedriver /usr/local/bin
 
 ## TODO list
 * Add testing
-* Set up cron job to ping all systems periodically
-
 * Fix dev env so fonts work for the nvim tree plugin
+* Take screenshots of outages or when the page size differs by >15% (TBD figure out what this threshold should be)
+* Install some kind of frontend framework so it doesn't look so ugly
+
+[1]: https://github.com/tdooner/caniapply/blob/main/systems.yaml
