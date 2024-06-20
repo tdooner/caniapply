@@ -359,7 +359,7 @@
   programs: ms
 - name: South Dakota WIC
   jurisdiction: South Dakota
-  url: https://sdwic.org/start-application/
+  url: https://www.sd.gov/wic
   programs: w
 - name: ONE DHS
   jurisdiction: Tennessee
