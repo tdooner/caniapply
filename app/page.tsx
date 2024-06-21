@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import moment from "moment";
 import { ReactNode } from "react";
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({ log: [{ emit: 'stdout', level: 'query' }] });
 const TWENTY_FOUR_HOURS_IN_MS = 1000*60*60*24; 
 const DATABASE_DATE_FORMAT = "YYYY-MM-DD HH:mm:ss.SSS";
 const statusCodeToText = (status : number) : UptimeStatusText => {

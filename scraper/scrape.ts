@@ -1,11 +1,11 @@
 import os from 'os'
 import { PrismaClient } from '@prisma/client'
-import format from 'date-format'
 import genericPool from 'generic-pool'
+import moment from 'moment'
 import { Builder, Browser, WebDriver, logging } from 'selenium-webdriver'
 import * as chrome from 'selenium-webdriver/chrome'
 
-const DATABASE_DATE_FORMAT = "yyyy-MM-dd hh:mm:ss.SSS";
+const DATABASE_DATE_FORMAT = "YYYY-MM-DD HH:mm:ss.SSS";
 const ONE_MEGABYTE = 1024 * 1024
 const BROWSER_MEM_USAGE_BYTES = 512 * ONE_MEGABYTE
 const FREE_MEMORY_BYTES = os.freemem()
@@ -142,7 +142,7 @@ export const scrapeAll = async function() {
             latency: loadResult.loadTimeSeconds,
             http_status: loadResult.httpStatus || HTTPStatus.UNKNOWN,
             body_length: response.length,
-            created_at: format(DATABASE_DATE_FORMAT, new Date())
+            created_at: moment(new Date()).format(DATABASE_DATE_FORMAT)
           }
         })
       }
@@ -156,7 +156,7 @@ export const scrapeAll = async function() {
           latency: 0,
           http_status: HTTPStatus.EXCEPTION,
           body_length: 0,
-          created_at: format(DATABASE_DATE_FORMAT, new Date())
+          created_at: moment(new Date()).format(DATABASE_DATE_FORMAT)
         }
       })
     }
