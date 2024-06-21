@@ -39,7 +39,6 @@ type LastDayUptime = {
 const getLastDayUptimeByHour = async function(systemIds: number[]) : Promise<LastDayUptime> {
   const uptimeBySystem : LastDayUptime = {};
   const twentyFourHoursAgo = moment(new Date(new Date().getTime() - TWENTY_FOUR_HOURS_IN_MS)).format(DATABASE_DATE_FORMAT);
-  console.log(twentyFourHoursAgo)
   const pings = await prisma.pings.findMany({
     where: {
       system_id: {
@@ -133,3 +132,6 @@ export default async function Home() {
     </main>
   );
 }
+
+// TODO: Get prerendering working again by conditionally accessing the database.
+export const dynamic = 'force-dynamic'
