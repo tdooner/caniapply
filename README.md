@@ -28,6 +28,15 @@ unzip chromedriver-linux64.zip
 sudo mv chromedriver-linux64/chromedriver /usr/local/bin
 ```
 
+## Get a copy of the database
+Get the External Database URL from the database on https://dashboard.render.com/
+```bash
+PRODUCTION_DATABASE_URL="postgres://..."
+dropdb caniapply_development
+createdb caniapply_development
+pg_dump --no-owner --no-privileges $PRODUCTION_DATABASE_URL | psql caniapply_development
+```
+
 ## TODO list
 * Add testing
 * Fix dev env so fonts work for the nvim tree plugin

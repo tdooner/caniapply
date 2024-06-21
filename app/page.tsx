@@ -1,13 +1,32 @@
 import { PrismaClient } from "@prisma/client";
-import format from "date-format";
+import moment from "moment";
 import { ReactNode } from "react";
 
 const prisma = new PrismaClient();
 const TWENTY_FOUR_HOURS_IN_MS = 1000*60*60*24; 
-const DATABASE_DATE_FORMAT = "yyyy-MM-dd hh:mm:ss.SSS";
+const DATABASE_DATE_FORMAT = "YYYY-MM-DD HH:mm:ss.SSS";
+const statusCodeToText = (status : number) : UptimeStatusText => {
+  if (status < 300) {
+    return "up"
+  } else if (status < 900) {
+    return "down"
+  } else {
+    return "exception"
+  }
+}
+const statusTextToColor = (statusText : UptimeStatusText) : string => {
+  if (statusText === "down") {
+    return "#f00"
+  } else if (statusText === "up") {
+    return "#0f0"
+  } else {
+    return "#ff0"
+  }
+}
 
+type UptimeStatusText = "down" | "up" | "exception"
 type UptimeInterval = {
-  status: "down" | "up",
+  status: UptimeStatusText,
   beginTime: string,
   endTime: string | null,
   http_status: number,
@@ -19,7 +38,8 @@ type LastDayUptime = {
 }
 const getLastDayUptimeByHour = async function(systemIds: number[]) : Promise<LastDayUptime> {
   const uptimeBySystem : LastDayUptime = {};
-  const twentyFourHoursAgo = format(DATABASE_DATE_FORMAT, new Date(new Date().getTime() - TWENTY_FOUR_HOURS_IN_MS));
+  const twentyFourHoursAgo = moment(new Date(new Date().getTime() - TWENTY_FOUR_HOURS_IN_MS)).format(DATABASE_DATE_FORMAT);
+  console.log(twentyFourHoursAgo)
   const pings = await prisma.pings.findMany({
     where: {
       system_id: {
@@ -28,16 +48,19 @@ const getLastDayUptimeByHour = async function(systemIds: number[]) : Promise<Las
       created_at: {
         gt: twentyFourHoursAgo
       }
+    },
+    orderBy: {
+      created_at: "asc"
     }
   });
   systemIds.forEach(systemId => {
-    const systemPings = pings.filter(ping => ping.system_id === systemId).sort((p1, p2) => p1.created_at.localeCompare(p2.created_at));
+    const systemPings = pings.filter(ping => ping.system_id === systemId)
     const intervals = [] as UptimeInterval[];
 
     systemPings.forEach((ping) => {
-      const lastInterval = intervals[intervals.length - 1];
-      const lastStatus = lastInterval ? lastInterval.status : null;
-      const currentStatus = ping.http_status < 300 ? "up" : "down";
+      const lastInterval = intervals[intervals.length - 1]
+      const lastStatus = lastInterval ? lastInterval.status : null
+      const currentStatus = statusCodeToText(ping.http_status)
 
       if (lastInterval) {
         lastInterval.endTime = ping.created_at
@@ -55,7 +78,7 @@ const getLastDayUptimeByHour = async function(systemIds: number[]) : Promise<Las
     // Assume that the system system is still in the status from after the last ping
     // TODO: Test this.
     if (intervals.length > 0) {
-      intervals[intervals.length - 1].endTime = format(DATABASE_DATE_FORMAT, new Date())
+      intervals[intervals.length - 1].endTime = moment.utc(new Date()).format(DATABASE_DATE_FORMAT)
     }
 
     uptimeBySystem[systemId] = {
@@ -71,15 +94,15 @@ const renderIntervals = function(intervals : UptimeInterval[]) : ReactNode {
     return <div>No data</div>
   }
 
-  const totalDuration = format.parse(DATABASE_DATE_FORMAT, intervals[intervals.length - 1].endTime) - format.parse(DATABASE_DATE_FORMAT, intervals[0].beginTime);
+  const totalDuration = moment(intervals[intervals.length - 1].endTime).diff(intervals[0].beginTime)
 
   return (
     <div>
       {intervals.map(interval => {
-        const intervalDuration = format.parse(DATABASE_DATE_FORMAT, interval.endTime) - format.parse(DATABASE_DATE_FORMAT, interval.beginTime);
+        const intervalDuration = moment(interval.endTime).diff(interval.beginTime)
         const intervalDurationPercentage = 100 * intervalDuration / totalDuration
         const style = {
-          backgroundColor: interval.status === "down" ? "#f00" : "#0f0",
+          backgroundColor: statusTextToColor(interval.status),
           display: "inline-block",
           width: `${intervalDurationPercentage}%`,
           height: `40px`,
