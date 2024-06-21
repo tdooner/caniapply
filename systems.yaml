@@ -202,7 +202,7 @@
   programs: w
 - name: DSS Child Care Subsidy
   jurisdiction: Missouri
-  url: https://formsportal.dss.mo.gov/content/forms/af/moa/my-dss/family-support-division/im-cc-child-care-subsidy/im-1cc.html
+  url: https://childcare.mo.gov/parent/s/programs
   programs: c
 - name: MO HealthNet
   jurisdiction: Missouri
@@ -228,10 +228,6 @@
   jurisdiction: Mississippi
   url: https://www.apps.mdhs.ms.gov/ccis/NewApplication/AppStartPage.aspx
   programs: c
-- name: myMDHS
-  jurisdiction: Mississippi
-  url: https://my.mdhs.ms.gov/#/activate/register
-  programs: st
 - name: Best Beginnings
   jurisdiction: Montana
   url: https://app.mt.gov/ccubs/
@@ -328,7 +324,8 @@
   programs: w
 - name: Programa Child Care
   jurisdiction: Puerto Rico
-  url: https://childcare.familia.pr.gov/requisitos-del-programa/
+  # Note: Application is not available online
+  url: https://childcare.familia.pr.gov/padres/como-solicitar.html
   programs: c
 - name: ADSEF Digital
   jurisdiction: Puerto Rico
