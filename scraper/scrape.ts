@@ -28,6 +28,7 @@ const initializeBrowser = async function(): Promise<WebDriver> {
   driverOptions.addArguments("--no-sandbox")
   driverOptions.addArguments("--disable-gpu")
   driverOptions.addArguments("--disable-dev-shm-usage")
+  driverOptions.addArguments("--window-size=1600x1200")
 
   const logPrefs = new logging.Preferences()
   logPrefs.setLevel(logging.Type.PERFORMANCE, logging.Level.ALL)
