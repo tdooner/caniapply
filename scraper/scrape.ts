@@ -1,9 +1,11 @@
 import os from 'os'
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, systems } from '@prisma/client'
 import genericPool from 'generic-pool'
 import moment from 'moment'
 import { Builder, Browser, WebDriver, logging } from 'selenium-webdriver'
 import * as chrome from 'selenium-webdriver/chrome'
+import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
+import { fromEnv } from '@aws-sdk/credential-providers'
 
 const DATABASE_DATE_FORMAT = "YYYY-MM-DD HH:mm:ss.SSS";
 const ONE_MEGABYTE = 1024 * 1024
@@ -105,6 +107,67 @@ const extractLoadResult = function(entries : logging.Entry[]) : PageLoadResult {
   return { httpStatus, loadTimeSeconds }
 }
 
+const saveFile = async (filename : string, pngString : string) : Promise<string> => {
+  console.log(filename)
+  const client = new S3Client({ region: "us-west-2", credentials: fromEnv() })
+  const command = new PutObjectCommand({
+    Bucket: process.env.S3_BUCKET_NAME,
+    Key: filename,
+    Body: Buffer.from(pngString, 'base64'),
+    ContentType: "image/png"
+  })
+
+  await client.send(command)
+
+  return filename
+}
+
+const takeScreenshotIfNecessary = async (driver : WebDriver, system : systems, loadStatus : PageLoadResult, prisma : PrismaClient) => {
+  if (!loadStatus || !loadStatus.httpStatus) {
+    return
+  }
+  let s3Path, success = loadStatus.httpStatus < 400
+
+  if (success) {
+    if (!system.last_success_screenshot || moment().isAfter(moment(system.last_success_screenshot).add(48, 'hours'))) {
+      const screenshot = await driver.takeScreenshot()
+      const filename = `${moment().format("YYYYMMDD/HHmmss")}_SUCCESS_${system.slug}.png`
+      s3Path = await saveFile(filename, screenshot)
+    }
+  } else {
+    if (!system.last_failure_screenshot || moment().isAfter(moment(system.last_failure_screenshot).add(1, 'hour'))) {
+      const screenshot = await driver.takeScreenshot()
+      const filename = `${moment().format("YYYYMMDD/HHmmss")}_FAILURE_${loadStatus.httpStatus}_${system.slug}.png`
+      s3Path = await saveFile(filename, screenshot)
+    }
+  }
+
+  if (!s3Path) {
+    return
+  }
+
+  await prisma.screenshots.create({
+    data: {
+      system_id: system.id,
+      s3_path: s3Path,
+      success: success,
+      created_at: new Date()
+    }
+  })
+
+  if (success) {
+    await prisma.systems.update({
+      where: { id: system.id },
+      data: { last_success_screenshot: new Date() }
+    })
+  } else {
+    await prisma.systems.update({
+      where: { id: system.id },
+      data: { last_failure_screenshot: new Date() }
+    })
+  }
+}
+
 export const scrape = async function(driver: WebDriver, url: string | null) {
   if (!url) {
     return
@@ -135,6 +198,8 @@ export const scrapeAll = async function() {
         const loadResult = extractLoadResult(performanceLogs)
 
         console.error("Response Length: ", response.length, "Load result: ", loadResult)
+
+        await takeScreenshotIfNecessary(driver, system, loadResult, prisma)
 
         await prisma.pings.create({
           data: {

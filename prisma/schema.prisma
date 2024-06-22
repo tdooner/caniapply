@@ -26,4 +26,14 @@ model systems {
   jurisdiction String?
   programs     String?
   name         String?
+  last_success_screenshot DateTime?
+  last_failure_screenshot DateTime?
+}
+
+model screenshots {
+  id            Int     @id @default(autoincrement())
+  system_id     Int
+  s3_path       String
+  success       Boolean
+  created_at    DateTime
 }
