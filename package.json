@@ -13,6 +13,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.600.0",
     "@aws-sdk/credential-providers": "^3.600.0",
+    "@aws-sdk/s3-request-presigner": "^3.600.0",
     "@prisma/client": "^5.13.0",
     "@types/moment": "^2.13.0",
     "@types/selenium-webdriver": "^4.1.22",

@@ -109,7 +109,6 @@ const extractLoadResult = function(entries : logging.Entry[]) : PageLoadResult {
 }
 
 const saveFile = async (filename : string, pngString : string) : Promise<string> => {
-  console.log(filename)
   const client = new S3Client({ region: "us-west-2", credentials: fromEnv() })
   const command = new PutObjectCommand({
     Bucket: process.env.S3_BUCKET_NAME,

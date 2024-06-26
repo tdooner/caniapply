@@ -40,7 +40,6 @@ pg_dump --no-owner --no-privileges $PRODUCTION_DATABASE_URL | psql caniapply_dev
 ## TODO list
 * Add testing
 * Fix dev env so fonts work for the nvim tree plugin
-* Take screenshots of outages or when the page size differs by >15% (TBD figure out what this threshold should be)
 * Install some kind of frontend framework so it doesn't look so ugly
 * Fix the database to actually use timestamps instead of strings for created_at
 

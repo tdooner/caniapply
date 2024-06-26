@@ -1,8 +1,12 @@
 import { PrismaClient } from "@prisma/client";
 import moment from "moment";
 import { ReactNode } from "react";
+import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3'
+import { fromEnv } from "@aws-sdk/credential-providers";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const prisma = new PrismaClient({ log: [{ emit: 'stdout', level: 'query' }] });
+const s3 = new S3Client({ region: "us-west-2", credentials: fromEnv() })
 const TWENTY_FOUR_HOURS_IN_MS = 1000*60*60*24; 
 const DATABASE_DATE_FORMAT = "YYYY-MM-DD HH:mm:ss.SSS";
 const statusCodeToText = (status : number) : UptimeStatusText => {
@@ -88,15 +92,49 @@ const getLastDayUptimeByHour = async function(systemIds: number[]) : Promise<Las
   return uptimeBySystem;
 }
 
-const renderIntervals = function(intervals : UptimeInterval[]) : ReactNode {
+type SystemScreenshot = {
+  created_at: Date
+  success: boolean
+  url: string
+}
+type LastDayScreenshots = {
+  [key: number]: SystemScreenshot[]
+}
+const getLastDayScreenshots = async function(systemIds: number[]) : Promise<LastDayScreenshots> {
+  const screenshotsBySystem = {} as LastDayScreenshots
+  const screenshots = await prisma.screenshots.findMany({
+    where: {
+      system_id: {
+        in: systemIds
+      },
+      created_at: {
+        gt: moment().subtract(24, 'hours').toDate()
+      }
+    }
+  })
+  await Promise.all(screenshots.map(async screenshot => {
+    screenshotsBySystem[screenshot.system_id] ||= []
+    const url = await getSignedUrl(s3, new GetObjectCommand({ Bucket: process.env.S3_BUCKET_NAME, Key: screenshot.s3_path }), { expiresIn: 3600 })
+    screenshotsBySystem[screenshot.system_id].push({
+      created_at: screenshot.created_at,
+      success: screenshot.success,
+      url: url,
+    })
+  }))
+
+  return screenshotsBySystem
+}
+
+const renderIntervals = function(intervals : UptimeInterval[], screenshots : SystemScreenshot[]) : ReactNode {
   if (intervals.length === 0) {
     return <div>No data</div>
   }
 
-  const totalDuration = moment(intervals[intervals.length - 1].endTime).diff(intervals[0].beginTime)
+  const intervalsStartTime = intervals[0].beginTime
+  const totalDuration = moment(intervals[intervals.length - 1].endTime).diff(intervalsStartTime)
 
   return (
-    <div>
+    <div className="system__interval">
       {intervals.map(interval => {
         const intervalDuration = moment(interval.endTime).diff(interval.beginTime)
         const intervalDurationPercentage = 100 * intervalDuration / totalDuration
@@ -108,7 +146,25 @@ const renderIntervals = function(intervals : UptimeInterval[]) : ReactNode {
         }
 
         return (
-          <div key={interval.beginTime} style={style} title={interval.http_status.toString()}></div>
+          <div key={interval.beginTime} style={style} title={`${interval.http_status}`}></div>
+        )
+      })}
+      {screenshots.map(screenshot => {
+        const offsetPercentage = 100 * moment(screenshot.created_at).diff(moment.utc(intervalsStartTime)) / totalDuration
+        const style = {
+          backgroundColor: screenshot.success ? "#00b92f" : "#bf0000",
+          left: `${offsetPercentage}%`,
+        }
+
+        return (
+          <a
+            key={`screenshot-${screenshot.created_at}`}
+            className={"system__screenshot"}
+            style={style}
+            href={screenshot.url}
+            target="_blank"
+          >
+          </a>
         )
       })}
     </div>
@@ -116,17 +172,19 @@ const renderIntervals = function(intervals : UptimeInterval[]) : ReactNode {
 }
 
 export default async function Home() {
-  const systems = await prisma.systems.findMany();
-  const uptimeBySystem = await getLastDayUptimeByHour(systems.map(system => system.id));
+  const systems = await prisma.systems.findMany()
+  const uptimeBySystem = await getLastDayUptimeByHour(systems.map(system => system.id))
+  const screenshotsBySystem = await getLastDayScreenshots(systems.map(system => system.id))
 
   return (
     <main>
       {systems.map(system => {
-        const intervals = uptimeBySystem[system.id].intervals;
+        const intervals = uptimeBySystem[system.id].intervals
+        const screenshots = screenshotsBySystem[system.id] || []
 
         return <div key={system.id}>
           <div>{system.jurisdiction} {system.name}</div>
-          <div>{renderIntervals(intervals)}</div>
+          <div>{renderIntervals(intervals, screenshots)}</div>
         </div>
       })}
     </main>

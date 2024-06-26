@@ -26,6 +26,18 @@ body {
     rgb(var(--background-start-rgb));
 }
 
+.system__interval {
+  position: relative;
+}
+
+.system__screenshot {
+  cursor: pointer;
+  height: 20px;
+  position: absolute;
+  top: 0px;
+  width: 5px;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
