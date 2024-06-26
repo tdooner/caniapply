@@ -168,14 +168,15 @@ const takeScreenshotIfNecessary = async (driver : WebDriver, system : systems, l
   }
 }
 
-export const scrape = async function(driver: WebDriver, url: string | null) {
-  if (!url) {
-    return
-  }
-
+export const scrape = async (driver: WebDriver, url: string) : Promise<string> => {
   console.log("Navigating to", url)
   await driver.get(url)
   return await driver.getPageSource()
+}
+
+type ScrapeResult = {
+  loadResult: PageLoadResult
+  responseLength: number
 }
 
 export const scrapeAll = async function() {
@@ -188,29 +189,46 @@ export const scrapeAll = async function() {
   }, { max: NUM_BROWSERS, min: 1 })
   pool.on("factoryCreateError", (ex) => console.error("Error starting browser:", ex))
 
+  const scrapeWithRetry = async (driver : WebDriver, url : string, retries = 1) : Promise<ScrapeResult> => {
+    const response = await scrape(driver, url)
+
+    const performanceLogs = await driver.manage().logs().get(logging.Type.PERFORMANCE)
+    const loadResult = extractLoadResult(performanceLogs)
+    if (loadResult.httpStatus === HTTPStatus.OTHER_ERROR && retries > 0) {
+      console.log("Retrying scrape for", url)
+      return await scrapeWithRetry(driver, url, --retries)
+    }
+    const responseLength = response.length
+
+    return {
+      loadResult,
+      responseLength,
+    }
+  }
+
   await Promise.all(systems.map(async system => {
+    if (!system.uri) {
+      console.warn("Can't scrape system", system.id, "(no URL)")
+      return
+    }
+
     const driver = await pool.acquire()
 
     try {
-      const response = await scrape(driver, system.uri)
-      if (response) {
-        const performanceLogs = await driver.manage().logs().get(logging.Type.PERFORMANCE)
-        const loadResult = extractLoadResult(performanceLogs)
+      const { loadResult, responseLength } = await scrapeWithRetry(driver, system.uri)
+      console.error("Response Length: ", responseLength, "Load result: ", loadResult)
 
-        console.error("Response Length: ", response.length, "Load result: ", loadResult)
+      await takeScreenshotIfNecessary(driver, system, loadResult, prisma)
 
-        await takeScreenshotIfNecessary(driver, system, loadResult, prisma)
-
-        await prisma.pings.create({
-          data: {
-            system_id: system.id,
-            latency: loadResult.loadTimeSeconds,
-            http_status: loadResult.httpStatus || HTTPStatus.UNKNOWN,
-            body_length: response.length,
-            created_at: moment(new Date()).format(DATABASE_DATE_FORMAT)
-          }
-        })
-      }
+      await prisma.pings.create({
+        data: {
+          system_id: system.id,
+          latency: loadResult.loadTimeSeconds,
+          http_status: loadResult.httpStatus || HTTPStatus.UNKNOWN,
+          body_length: responseLength,
+          created_at: moment(new Date()).format(DATABASE_DATE_FORMAT)
+        }
+      })
       pool.release(driver)
     } catch (ex) {
       console.error("Got exception: ", ex)
