@@ -33,7 +33,7 @@ type FakeHttpStatuses = typeof FakeHttpStatus[keyof typeof FakeHttpStatus]
 type HttpStatus = FakeHttpStatuses | number // Can I narrow this to only the allowed codes?
 
 const isRetryable = function(httpStatus : HttpStatus) : boolean {
-  return httpStatus > 990
+  return httpStatus >= FakeHttpStatus.OTHER_ERROR
 }
 
 const initializeBrowser = async function(): Promise<WebDriver> {

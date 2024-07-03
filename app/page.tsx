@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3'
 import { fromEnv } from "@aws-sdk/credential-providers";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { Card, CardBody, CardHeader, Center, Heading, SimpleGrid } from "@chakra-ui/react";
 
 const prisma = new PrismaClient({ log: [{ emit: 'stdout', level: 'query' }] });
 const s3 = new S3Client({ region: "us-west-2", credentials: fromEnv() })
@@ -178,15 +179,28 @@ export default async function Home() {
 
   return (
     <main>
-      {systems.map(system => {
-        const intervals = uptimeBySystem[system.id].intervals
-        const screenshots = screenshotsBySystem[system.id] || []
+      <Center>
+        <Heading>Can I Apply?</Heading>
+      </Center>
 
-        return <div key={system.id}>
-          <div>{system.jurisdiction} {system.name}</div>
-          <div>{renderIntervals(intervals, screenshots)}</div>
-        </div>
-      })}
+      <SimpleGrid columns={[1, 2, 4]} spacing={10}>
+        {systems.map(system => {
+          const intervals = uptimeBySystem[system.id].intervals
+          const screenshots = screenshotsBySystem[system.id] || []
+
+          return (
+            <Card key={system.id}>
+              <CardHeader>
+                {system.jurisdiction} {system.name}
+              </CardHeader>
+
+              <CardBody>
+                <div>{renderIntervals(intervals, screenshots)}</div>
+              </CardBody>
+            </Card>
+          )
+        })}
+      </SimpleGrid>
     </main>
   );
 }
