@@ -14,11 +14,26 @@ const FREE_MEMORY_BYTES = os.freemem()
 const NUM_BROWSERS = process.env.NUM_BROWSERS ?
   Number.parseInt(process.env.NUM_BROWSERS) :
   Math.min(8, Math.ceil(FREE_MEMORY_BYTES / BROWSER_MEM_USAGE_BYTES))
-const HTTPStatus = {
+const FakeHttpStatus = <const>{
   UNKNOWN: 0,
+  
+  // Non-retryable
   TLS_CERT_COMMON_NAME_INVALID: 700,
+  DNS_NAME_NOT_RESOLVED: 701,
+  TLS_PROTOCOL_ERROR: 702,
+
+  // Retryable
   OTHER_ERROR: 990,
+  CONNECTION_RESET: 991,
+
+  // Catch-all error that isn't retryable because we assume the browser crashed
   EXCEPTION: 999,
+}
+type FakeHttpStatuses = typeof FakeHttpStatus[keyof typeof FakeHttpStatus]
+type HttpStatus = FakeHttpStatuses | number // Can I narrow this to only the allowed codes?
+
+const isRetryable = function(httpStatus : HttpStatus) : boolean {
+  return httpStatus > 990
 }
 
 const initializeBrowser = async function(): Promise<WebDriver> {
@@ -51,7 +66,7 @@ const initializeBrowser = async function(): Promise<WebDriver> {
 
 type PageLoadResult = {
   loadTimeSeconds: number | undefined,
-  httpStatus: number | undefined
+  httpStatus: HttpStatus
 }
 type ParsedEntry = {
   message: {
@@ -75,7 +90,7 @@ const diffTimestamps = function(entry1 : ParsedEntry | undefined, entry2 : Parse
 }
 
 const extractLoadResult = function(entries : logging.Entry[]) : PageLoadResult {
-  let loadTimeSeconds, httpStatus
+  let loadTimeSeconds, httpStatus = <HttpStatus>FakeHttpStatus.UNKNOWN
   const parsedEntries = entries.map(entry => JSON.parse(entry.message)) as ParsedEntry[]
 
   const startedLoadingEvent = parsedEntries.find(entry => entry.message.method === "Network.requestWillBeSent")
@@ -89,10 +104,17 @@ const extractLoadResult = function(entries : logging.Entry[]) : PageLoadResult {
     loadTimeSeconds = diffTimestamps(startedLoadingEvent, failedLoadingEvent)
     const errorText = failedLoadingEvent.message.params.errorText
     console.error("Failed to load: ", errorText)
-    if (errorText === "net::ERR_CERT_COMMON_NAME_INVALID") {
-      httpStatus = HTTPStatus.TLS_CERT_COMMON_NAME_INVALID
-    } else {
-      httpStatus = HTTPStatus.OTHER_ERROR
+    switch (errorText) {
+      case "net::ERR_CERT_COMMON_NAME_INVALID":
+        httpStatus = FakeHttpStatus.TLS_CERT_COMMON_NAME_INVALID
+      case "net::ERR_SSL_PROTOCOL_ERROR":
+        httpStatus = FakeHttpStatus.TLS_PROTOCOL_ERROR
+      case "net::ERR_NAME_NOT_RESOLVED":
+        httpStatus = FakeHttpStatus.DNS_NAME_NOT_RESOLVED
+      case "net::ERR_CONNECTION_RESET":
+        httpStatus = FakeHttpStatus.CONNECTION_RESET
+      default:
+        httpStatus = FakeHttpStatus.OTHER_ERROR
     }
   } else if (responseEvent.length > 1) {
     console.error("More than one responseEvent!", responseEvent)
@@ -189,12 +211,12 @@ export const scrapeAll = async function() {
   }, { max: NUM_BROWSERS, min: 1 })
   pool.on("factoryCreateError", (ex) => console.error("Error starting browser:", ex))
 
-  const scrapeWithRetry = async (driver : WebDriver, url : string, retries = 1) : Promise<ScrapeResult> => {
+  const scrapeWithRetry = async (driver : WebDriver, url : string, retries = 2) : Promise<ScrapeResult> => {
     const response = await scrape(driver, url)
 
     const performanceLogs = await driver.manage().logs().get(logging.Type.PERFORMANCE)
     const loadResult = extractLoadResult(performanceLogs)
-    if (loadResult.httpStatus === HTTPStatus.OTHER_ERROR && retries > 0) {
+    if (isRetryable(loadResult.httpStatus) && retries > 0) {
       console.log("Retrying scrape for", url)
       return await scrapeWithRetry(driver, url, --retries)
     }
@@ -224,7 +246,7 @@ export const scrapeAll = async function() {
         data: {
           system_id: system.id,
           latency: loadResult.loadTimeSeconds,
-          http_status: loadResult.httpStatus || HTTPStatus.UNKNOWN,
+          http_status: loadResult.httpStatus || FakeHttpStatus.UNKNOWN,
           body_length: responseLength,
           created_at: moment(new Date()).format(DATABASE_DATE_FORMAT)
         }
@@ -237,7 +259,7 @@ export const scrapeAll = async function() {
         data: {
           system_id: system.id,
           latency: 0,
-          http_status: HTTPStatus.EXCEPTION,
+          http_status: FakeHttpStatus.EXCEPTION,
           body_length: 0,
           created_at: moment(new Date()).format(DATABASE_DATE_FORMAT)
         }
